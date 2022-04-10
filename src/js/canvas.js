@@ -15,8 +15,6 @@ function createImage(url) {
 }
 
 const platformImage = createImage(platformUrl)
-// const hillsImage = createImage(hillsUrl)
-// const backgroundImage = createImage(backgroundUrl)
 
 class Player {
   constructor() {
@@ -43,8 +41,6 @@ class Player {
     this.position.x += this.velocity.x
     if (this.position.y + this.height + this.velocity.y <= canvas.height) {
       this.velocity.y += gravity
-    } else {
-      this.velocity.y = 0
     }
   }
 }
@@ -81,8 +77,8 @@ class GenericObject {
   }
 }
 
-const player = new Player()
-const platforms = [
+let player = new Player()
+let platforms = [
   new Platform({
     x: -1,
     y: 470,
@@ -93,8 +89,13 @@ const platforms = [
     y: 470,
     image: platformImage
   }),
+  new Platform({
+    x: platformImage.width * 2 + 100,
+    y: 470,
+    image: platformImage
+  }),
 ]
-const genericObjects = [
+let genericObjects = [
   new GenericObject({
     x: -1,
     y: -1,
@@ -118,11 +119,44 @@ const keys = {
 
 let scrollOffset = 0
 
+function init() {
+  player = new Player()
+  platforms = [
+    new Platform({
+      x: -1,
+      y: 470,
+      image: platformImage
+    }),
+    new Platform({
+      x: platformImage.width -3,
+      y: 470,
+      image: platformImage
+    }),
+    new Platform({
+      x: platformImage.width * 2 + 100,
+      y: 470,
+      image: platformImage
+    }),
+  ]
+  genericObjects = [
+    new GenericObject({
+      x: -1,
+      y: -1,
+      image: createImage(backgroundUrl)
+    }),
+    new GenericObject({
+      x: -1,
+      y: -1,
+      image: createImage(hillsUrl)
+    }),
+  ]
+  scrollOffset = 0
+}
+
 function animate() {
   requestAnimationFrame(animate)
   c.fillStyle = 'white'
   c.fillRect(0, 0, canvas.width, canvas.height)
-
   
   genericObjects.forEach( genericObject => {
     genericObject.draw()
@@ -166,6 +200,10 @@ function animate() {
 
   if (scrollOffset > 200) {
     // win
+  }
+
+  if (player.position.y > canvas.height) {
+    init()
   }
 
   // platform collision detecting
