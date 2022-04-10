@@ -1,10 +1,13 @@
-
+import platformImage from '../img/platform.png'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 const gravity = 0.5
-canvas.width = innerWidth
-canvas.height = innerHeight
+canvas.width = 1024
+canvas.height = 576
+
+const image = new Image()
+image.src = platformImage
 
 class Player {
   constructor() {
@@ -38,25 +41,35 @@ class Player {
 }
 
 class Platform {
-  constructor({ x, y }) {
+  constructor({ x, y, image }) {
     this.position = {
       x,
       y
     }
-    this.width = 200
-    this.height = 20
+    this.image = image
+    this.width = image.width
+    this.height = image.height
   }
 
   draw() {
-    c.fillStyle = 'aqua'
-    c.fillRect(this.position.x, this.position.y, this.width, this.height)
+    c.drawImage(this.image, this.position.x, this.position.y)
+    // c.fillStyle = 'aqua'
+    // c.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 }
 
 const player = new Player()
 const platforms = [
-  new Platform({ x: 200, y: 350 }),
-  new Platform({ x: 600, y: 350 }),
+  new Platform({
+    x: -1,
+    y: 470,
+    image
+  }),
+  new Platform({
+    x: image.width -3,
+    y: 470,
+    image
+  }),
 ]
 
 const keys = {
@@ -71,12 +84,14 @@ const keys = {
 let scrollOffset = 0
 
 function animate() {
-  c.clearRect(0, 0, canvas.width, canvas.height)
   requestAnimationFrame(animate)
-  player.update()
+  c.fillStyle = 'white'
+  c.fillRect(0, 0, canvas.width, canvas.height)
+
   platforms.forEach( platform => {
     platform.draw()
   })
+  player.update()
 
   if (
     keys.right.pressed &&
@@ -138,7 +153,6 @@ addEventListener('keydown', ({ keyCode }) => {
       break;
     case 39:
       // right
-      // player.velocity.x = 1
       keys.right.pressed = true
       break;
 
@@ -151,7 +165,6 @@ addEventListener('keyup', ({ keyCode }) => {
   switch (keyCode) {
     case 38:
       // up
-      // player.velocity.y -= 20
       break;
 
     case 40:
@@ -164,7 +177,6 @@ addEventListener('keyup', ({ keyCode }) => {
       break;
     case 39:
       // right
-      // player.velocity.x = 0
       keys.right.pressed = false
       break;
 
