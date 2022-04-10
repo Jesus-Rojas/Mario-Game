@@ -1,3 +1,5 @@
+
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 const gravity = 0.5
@@ -66,6 +68,8 @@ const keys = {
   },
 }
 
+let scrollOffset = 0
+
 function animate() {
   c.clearRect(0, 0, canvas.width, canvas.height)
   requestAnimationFrame(animate)
@@ -87,14 +91,20 @@ function animate() {
   } else {
     player.velocity.x = 0
     if (keys.right.pressed) {
+      scrollOffset += 5
       platforms.forEach( platform => {
         platform.position.x -= 5
       })
     } else if (keys.left.pressed) {
+      scrollOffset -= 5
       platforms.forEach( platform => {
         platform.position.x += 5
       })
     }
+  }
+
+  if (scrollOffset > 200) {
+    // win
   }
 
   // platform collision detecting
